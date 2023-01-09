@@ -37,6 +37,7 @@ async def update_celery_task_status(task_id: str):
     )
     await broadcast.disconnect()
 
+
 ###################
 # Socket.IO
 ###################
