@@ -6,6 +6,8 @@ from celery import shared_task
 from celery.signals import task_postrun
 from celery.utils.log import get_task_logger
 
+from project.database import db_context
+
 logger = get_task_logger(__name__)
 
 
@@ -52,21 +54,13 @@ def task_postrun_handler(task_id, **kwargs):
     update_celery_task_status_socketio(task_id)
 
 
-"""
-Periodic Tasks
-"""
-
-
+# Periodic Tasks
 @shared_task(name="task_schedule_work")
 def task_schedule_work():
     logger.info("task_schedule_work run")
 
 
-"""
-Multiplies Queues
-"""
-
-
+# Multiplies Queues
 @shared_task(name="default:dynamic_example_one")
 def dynamic_example_one():
     logger.info("Example One")
@@ -82,11 +76,7 @@ def dynamic_example_three():
     logger.info("Example Three")
 
 
-"""
-Retrying Failed Tasks
-"""
-
-
+# Retrying Failed Tasks
 @shared_task(bind=True)
 def task_process_notification(self):
     try:
@@ -108,3 +98,12 @@ def task_process_notification(self):
 #         raise Exception()
 
 #     requests.post("https://httpbin.org/delay/5")
+
+# Database Transactions
+@shared_task()
+def task_send_welcome_email(user_pk):
+    from project.users.models import User
+
+    with db_context() as session:
+        user = session.query(User).get(user_pk)
+        logger.info(f"send email to {user.email} {user.id}")
