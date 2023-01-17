@@ -52,9 +52,19 @@ def task_postrun_handler(task_id, **kwargs):
     update_celery_task_status_socketio(task_id)
 
 
+"""
+Periodic Tasks
+"""
+
+
 @shared_task(name="task_schedule_work")
 def task_schedule_work():
     logger.info("task_schedule_work run")
+
+
+"""
+Multiplies Queues
+"""
 
 
 @shared_task(name="default:dynamic_example_one")
@@ -70,3 +80,31 @@ def dynamic_example_two():
 @shared_task(name="high_priority:dynamic_example_three")
 def dynamic_example_three():
     logger.info("Example Three")
+
+
+"""
+Retrying Failed Tasks
+"""
+
+
+@shared_task(bind=True)
+def task_process_notification(self):
+    try:
+        if not random.choice([0, 1]):
+            # mimic random error
+            raise Exception()
+
+        # this would block the I/O
+        requests.post("https://httpbin.org/delay/5")
+    except Exception as e:
+        logger.error("exception raised, it would be retry after 5 seconds")
+        raise self.retry(exc=e, countdown=5)
+
+
+# @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={"max_retries": 7, "countdown": 5})
+# def task_process_notification(self):
+#     if not random.choice([0, 1]):
+#         # mimic random error
+#         raise Exception()
+
+#     requests.post("https://httpbin.org/delay/5")
