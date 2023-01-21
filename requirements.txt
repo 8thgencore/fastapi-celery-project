@@ -22,3 +22,10 @@ broadcaster==0.2.0
 # socket.io
 aioredis==2.0.1
 python-socketio==5.7.2
+
+# test
+httpx==0.23.3
+pytest==7.2.1
+factory-boy==3.2.1
+pytest-factoryboy==2.5.1
+pytest-cov==4.0.0

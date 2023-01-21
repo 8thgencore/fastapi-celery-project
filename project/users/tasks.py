@@ -90,13 +90,18 @@ def task_process_notification(self):
         raise self.retry(exc=e, countdown=5)
 
 
-# @shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={"max_retries": 7, "countdown": 5})
+# @shared_task(
+#     bind=True,
+#     autoretry_for=(Exception,),
+#     retry_kwargs={"max_retries": 7, "countdown": 5},
+# )
 # def task_process_notification(self):
 #     if not random.choice([0, 1]):
 #         # mimic random error
 #         raise Exception()
 
 #     requests.post("https://httpbin.org/delay/5")
+
 
 # Database Transactions
 @shared_task()
@@ -120,3 +125,19 @@ def on_after_setup_logger(logger, **kwargs):
     file_handler = logging.FileHandler("celery.log")
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
+
+
+# For pytest
+@shared_task(bind=True)
+def task_add_subscribe(self, user_pk):
+    with db_context() as session:
+        try:
+            from project.users.models import User
+
+            user = session.query(User).get(user_pk)
+            requests.post(
+                "https://httpbin.org/delay/5",
+                data={"email": user.email},
+            )
+        except Exception as exc:
+            raise self.retry(exc=exc)

@@ -142,3 +142,6 @@ dmypy.json
 cython_debug/
 
 .python-version
+
+.ruff_cache/
+*.db
