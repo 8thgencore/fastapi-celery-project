@@ -5,7 +5,7 @@ celery==5.2.7
 redis==4.4.2
 flower==1.2.0
 
-SQLAlchemy==1.4.46
+SQLAlchemy==2.0.0
 alembic==1.9.2
 psycopg2-binary==2.9.5
 
