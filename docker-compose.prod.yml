@@ -83,6 +83,7 @@ services:
     command: /start-flower
     volumes:
       - uploadfiles:/app/upload
+      - flower_db:/app/flower_db
     env_file:
       - ./.env/.prod-sample
     depends_on:
@@ -93,4 +94,4 @@ services:
 volumes:
   postgres_data:
   uploadfiles:
-  
+  flower_db:
