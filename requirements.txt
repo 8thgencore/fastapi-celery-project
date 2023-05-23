@@ -12,7 +12,7 @@ psycopg2-binary==2.9.5
 watchfiles==0.18.1
 
 Jinja2==3.1.2
-requests==2.28.2
+requests==2.31.0
 
 # websocket
 asgiref==3.6.0 
